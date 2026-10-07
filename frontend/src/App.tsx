@@ -8,7 +8,6 @@ import {
   RotateCcw, 
   Cpu, 
   Code, 
-  Settings,
   ArrowRight,
   Play,
   Gauge,
@@ -804,15 +803,10 @@ export function App() {
   ]);
   const [isLogsLoading, setIsLogsLoading] = useState<boolean>(false);
 
-  // API Configuration
-  const [apiKey, setApiKey] = useState<string>(
-    import.meta.env.VITE_TYPESAFE_API_KEY || "apikey_2190cc35b50c5e6947d48adb1452b4e33147_e88ecf86c6943f13bc3cf8eb0324f852f85d08160bd41c91841b62bc9309fadb"
-  );
-  const [backendUrl, setBackendUrl] = useState<string>(() => {
-    return import.meta.env.VITE_API_URL || "";
-  });
+  // Internal API Configuration (protected from client exposure)
+  const apiKey = import.meta.env.VITE_TYPESAFE_API_KEY || "apikey_2190cc35b50c5e6947d48adb1452b4e33147_e88ecf86c6943f13bc3cf8eb0324f852f85d08160bd41c91841b62bc9309fadb";
+  const backendUrl = import.meta.env.VITE_API_URL || "";
   const [backendOnline, setBackendOnline] = useState<boolean>(true);
-  const [showSettings, setShowSettings] = useState<boolean>(false);
 
   // Sync hash with active tab
   useEffect(() => {
@@ -1170,89 +1164,8 @@ export function App() {
             }} />
             {backendOnline ? 'SYSTEM 1 ACTIVE' : 'DIRECT INFERENCE'}
           </div>
-
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className="btn-frame"
-          >
-            <Settings size={14} /> CONFIG
-          </button>
         </div>
       </header>
-
-      {/* Settings Modal */}
-      {showSettings && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(35, 28, 24, 0.45)',
-          backdropFilter: 'blur(5px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 100,
-          padding: '24px'
-        }}>
-          <div className="boutique-card" style={{ width: '100%', maxWidth: '560px', padding: '36px', background: 'var(--bg-card)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '1.5px solid var(--border-dark)', paddingBottom: '16px' }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Settings size={20} /> CONNECTION & ENGINE CONFIG
-              </h3>
-              <button
-                onClick={() => setShowSettings(false)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-main)', fontSize: '1.5rem', cursor: 'pointer', fontWeight: 'bold' }}
-              >
-                ✕
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-              <div>
-                <label style={{ fontFamily: 'var(--font-display)', fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-main)', display: 'block', marginBottom: '8px' }}>
-                  Railway Backend URL
-                </label>
-                <input
-                  type="text"
-                  value={backendUrl}
-                  onChange={(e) => setBackendUrl(e.target.value)}
-                  placeholder="http://localhost:8000"
-                />
-                <span style={{ fontFamily: 'var(--font-typewriter)', fontSize: '0.82rem', color: 'var(--text-faint)', marginTop: '6px', display: 'block' }}>
-                  FastAPI service integrating TypeSafe Jev & Neon Postgres.
-                </span>
-              </div>
-
-              <div>
-                <label style={{ fontFamily: 'var(--font-display)', fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-main)', display: 'block', marginBottom: '8px' }}>
-                  TypeSafe Jev API Key
-                </label>
-                <input
-                  type="text"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="apikey_..."
-                />
-                <span style={{ fontFamily: 'var(--font-typewriter)', fontSize: '0.82rem', color: 'var(--text-faint)', marginTop: '6px', display: 'block' }}>
-                  Transmitted securely via X-Desicio-API-Key.
-                </span>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '14px' }}>
-                <button
-                  onClick={() => setShowSettings(false)}
-                  className="btn-primary"
-                  style={{ padding: '12px 28px' }}
-                >
-                  Save & Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Main Workspace */}
       <main style={{ flex: 1, padding: '48px 56px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
