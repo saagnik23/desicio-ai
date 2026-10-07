@@ -6,10 +6,7 @@ import {
   Users, 
   Bot, 
   Terminal, 
-  CheckCircle2, 
   Clock, 
-  Database, 
-  Cloud, 
   Layers, 
   Play, 
   RotateCcw, 
@@ -160,17 +157,17 @@ const PRESET_PIPELINES: Pipeline[] = [
 ];
 
 export function App() {
-  const getInitialTab = (): 'playground' | 'benchmarks' | 'logs' | 'deploy' => {
+  const getInitialTab = (): 'playground' | 'benchmarks' | 'logs' => {
     if (typeof window !== 'undefined' && window.location.hash) {
       const hash = window.location.hash.replace('#', '');
-      if (['playground', 'benchmarks', 'logs', 'deploy'].includes(hash)) {
+      if (['playground', 'benchmarks', 'logs'].includes(hash)) {
         return hash as any;
       }
     }
-    return 'deploy'; // Defaults to 2nd Image: Production Deployment Blueprint
+    return 'playground';
   };
 
-  const [activeTab, setActiveTab] = useState<'playground' | 'benchmarks' | 'logs' | 'deploy'>(getInitialTab);
+  const [activeTab, setActiveTab] = useState<'playground' | 'benchmarks' | 'logs'>(getInitialTab);
   const [selectedPipeline, setSelectedPipeline] = useState<Pipeline>(PRESET_PIPELINES[0]);
   const [customState, setCustomState] = useState<string>(PRESET_PIPELINES[0].sample_state);
   
@@ -462,25 +459,6 @@ export function App() {
             }}
           >
             <BarChart3 size={16} /> Audit Trail ({auditLogs.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('deploy')}
-            style={{
-              padding: '10px 22px',
-              borderRadius: '8px',
-              border: activeTab === 'deploy' ? '1.5px solid #2563eb' : '1.5px solid transparent',
-              background: activeTab === 'deploy' ? '#ffffff' : 'transparent',
-              color: '#121212',
-              fontWeight: activeTab === 'deploy' ? 'bold' : 500,
-              fontSize: '1rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: activeTab === 'deploy' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none'
-            }}
-          >
-            <Cloud size={16} /> Deployment
           </button>
         </div>
 
@@ -1378,79 +1356,6 @@ export function App() {
                 </table>
               </div>
             )}
-          </div>
-        )}
-
-        {/* TAB 4: DEPLOY GUIDE */}
-        {activeTab === 'deploy' && (
-          <div>
-            <div style={{ marginBottom: '36px' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#121212', marginBottom: '8px' }}>
-                Production Deployment Blueprint
-              </h2>
-              <p style={{ fontSize: '1.08rem', color: 'var(--text-muted)' }}>
-                Your project is fully configured for <strong>Vercel</strong> (Frontend), <strong>Railway</strong> (FastAPI Backend), and <strong>Neon Serverless Postgres</strong> (Database).
-              </p>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '28px' }}>
-              {/* Vercel */}
-              <div className="glass-panel" style={{ padding: '36px', background: '#ffffff', borderRadius: '18px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                  <Cloud size={24} color="#121212" />
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#121212' }}>1. Vercel (Frontend)</h3>
-                </div>
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-muted)', marginBottom: '18px' }}>
-                  Deploy the <code>frontend/</code> directory with zero config. <code>vercel.json</code> is already included.
-                </p>
-                <div className="code-block" style={{ fontSize: '0.92rem', marginBottom: '16px' }}>
-                  cd frontend<br />
-                  vercel
-                </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-faint)', fontStyle: 'italic' }}>
-                  Set Environment Variable in Vercel:<br />
-                  <code>VITE_API_URL</code> = your Railway backend URL
-                </p>
-              </div>
-
-              {/* Railway */}
-              <div className="glass-panel" style={{ padding: '36px', background: '#ffffff', borderRadius: '18px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                  <Database size={24} color="#121212" />
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#121212' }}>2. Railway (Backend)</h3>
-                </div>
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-muted)', marginBottom: '18px' }}>
-                  Deploy <code>backend/</code> directly via Railway GitHub App or Railway CLI.
-                </p>
-                <div className="code-block" style={{ fontSize: '0.92rem', marginBottom: '16px' }}>
-                  cd backend<br />
-                  railway up
-                </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-faint)', fontStyle: 'italic' }}>
-                  Required Railway Variables:<br />
-                  <code>TYPESAFE_API_KEY</code> = (pre-configured)<br />
-                  <code>DATABASE_URL</code> = Neon Connection String
-                </p>
-              </div>
-
-              {/* Neon Postgres */}
-              <div className="glass-panel" style={{ padding: '36px', background: '#ffffff', borderRadius: '18px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                  <CheckCircle2 size={24} color="#121212" />
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#121212' }}>3. Neon Postgres (Database)</h3>
-                </div>
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-muted)', marginBottom: '18px' }}>
-                  Linked to Neon Project <code>cold-credit-65603813</code> on branch <code>production</code>.
-                </p>
-                <div className="code-block" style={{ fontSize: '0.92rem', marginBottom: '16px' }}>
-                  neon link --project-id cold-credit-65603813 --branch production -y<br />
-                  neon deploy
-                </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-faint)', fontStyle: 'italic' }}>
-                  Tables <code>pipelines</code>, <code>decisions</code>, and <code>benchmarks</code> are deployed and active.
-                </p>
-              </div>
-            </div>
           </div>
         )}
       </main>
