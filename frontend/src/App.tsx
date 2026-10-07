@@ -186,6 +186,7 @@ export function App() {
     { id: "dec_1", pipeline_name: "Customer Support Triage", latency_ms: 180, created_at: new Date().toISOString() },
     { id: "dec_2", pipeline_name: "FinTech Fraud & Risk Sentinel", latency_ms: 219, created_at: new Date().toISOString() }
   ]);
+  const [isLogsLoading, setIsLogsLoading] = useState<boolean>(false);
 
   // API Configuration
   const [apiKey, setApiKey] = useState<string>(
@@ -224,6 +225,7 @@ export function App() {
   // Load audit history
   useEffect(() => {
     const fetchHistory = async () => {
+      setIsLogsLoading(true);
       try {
         const res = await fetch(`${backendUrl}/api/v1/history?limit=20`);
         if (res.ok) {
@@ -234,6 +236,8 @@ export function App() {
         }
       } catch (e) {
         // keep initial logs
+      } finally {
+        setIsLogsLoading(false);
       }
     };
     fetchHistory();
@@ -841,8 +845,14 @@ export function App() {
                     <Clock size={20} color="#121212" />
                     <div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-faint)', letterSpacing: '0.06em', fontWeight: 'bold' }}>LATENCY</div>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#121212' }}>
-                        {result ? `${result.latency_ms} ms` : '—'}
+                      <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#121212', minHeight: '30px', display: 'flex', alignItems: 'center' }}>
+                        {isLoading ? (
+                          <div className="skeleton" style={{ width: '65px', height: '22px', borderRadius: '4px' }} />
+                        ) : result ? (
+                          `${result.latency_ms} ms`
+                        ) : (
+                          '—'
+                        )}
                       </div>
                     </div>
                   </div>
@@ -876,32 +886,101 @@ export function App() {
                   )}
                 </div>
 
+                {/* SKELETON LOADING ANIMATION WHEN BUFFERING / INFERRING */}
                 {isLoading && (
-                  <div style={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: '400px'
-                  }}>
-                    <div className="pulse-indicator" style={{
-                      width: '64px',
-                      height: '64px',
-                      borderRadius: '50%',
-                      background: '#faf3e7',
-                      border: '2px solid #ecd5b6',
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', flex: 1 }}>
+                    {/* Live Processing Header Bar */}
+                    <div style={{
+                      padding: '16px 20px',
+                      background: '#fffbf2',
+                      border: '1.5px solid #ebd9bf',
+                      borderRadius: '12px',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'space-between'
                     }}>
-                      <Zap size={28} color="#121212" />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className="pulse-indicator" style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#121212' }} />
+                        <div>
+                          <div style={{ fontSize: '0.98rem', fontWeight: 'bold', color: '#121212' }}>
+                            Evaluating System 1 Decision Primitives...
+                          </div>
+                          <div style={{ fontSize: '0.84rem', color: 'var(--text-faint)', fontStyle: 'italic', marginTop: '2px' }}>
+                            Computing calibrated probabilities via direct embedding inference
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{
+                        padding: '6px 14px',
+                        background: '#ffffff',
+                        border: '1.5px solid #ebd9bf',
+                        borderRadius: '20px',
+                        fontSize: '0.9rem',
+                        fontWeight: 'bold',
+                        color: '#121212'
+                      }}>
+                        {timerMs} ms
+                      </div>
                     </div>
-                    <div style={{ marginTop: '20px', fontSize: '1.2rem', fontWeight: 'bold', color: '#121212' }}>
-                      Performing System 1 Inference...
+
+                    {/* Question Card 1 Skeleton (Score Primitive) */}
+                    <div className="skeleton-card">
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                        <div className="skeleton" style={{ width: '170px', height: '22px' }} />
+                        <div className="skeleton" style={{ width: '60px', height: '22px', borderRadius: '6px' }} />
+                      </div>
+                      <div className="skeleton" style={{ width: '85%', height: '14px', marginBottom: '16px' }} />
+                      <div className="skeleton" style={{ width: '100%', height: '36px', borderRadius: '8px', marginBottom: '14px' }} />
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+                        <div className="skeleton" style={{ height: '36px', borderRadius: '6px' }} />
+                        <div className="skeleton" style={{ height: '36px', borderRadius: '6px' }} />
+                        <div className="skeleton" style={{ height: '36px', borderRadius: '6px' }} />
+                        <div className="skeleton" style={{ height: '36px', borderRadius: '6px' }} />
+                      </div>
                     </div>
-                    <div style={{ fontSize: '0.92rem', color: 'var(--text-faint)', marginTop: '6px', fontStyle: 'italic' }}>
-                      Elapsed: {timerMs} ms
+
+                    {/* Question Card 2 Skeleton (Noul / Binary Gate) */}
+                    <div className="skeleton-card">
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                        <div className="skeleton" style={{ width: '220px', height: '22px' }} />
+                        <div className="skeleton" style={{ width: '60px', height: '22px', borderRadius: '6px' }} />
+                      </div>
+                      <div className="skeleton" style={{ width: '70%', height: '14px', marginBottom: '16px' }} />
+                      <div className="skeleton" style={{ width: '100%', height: '36px', borderRadius: '8px', marginBottom: '10px' }} />
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div className="skeleton" style={{ width: '30%', height: '13px' }} />
+                        <div className="skeleton" style={{ width: '20%', height: '13px' }} />
+                      </div>
+                    </div>
+
+                    {/* Question Card 3 Skeleton (Choice Primitive) */}
+                    <div className="skeleton-card">
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                        <div className="skeleton" style={{ width: '190px', height: '22px' }} />
+                        <div className="skeleton" style={{ width: '60px', height: '22px', borderRadius: '6px' }} />
+                      </div>
+                      <div className="skeleton" style={{ width: '65%', height: '14px', marginBottom: '16px' }} />
+                      <div className="skeleton" style={{ width: '130px', height: '28px', borderRadius: '6px', marginBottom: '14px' }} />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <div className="skeleton" style={{ width: '100%', height: '12px' }} />
+                        <div className="skeleton" style={{ width: '80%', height: '12px' }} />
+                        <div className="skeleton" style={{ width: '55%', height: '12px' }} />
+                      </div>
+                    </div>
+
+                    {/* Telemetry Footer Skeleton */}
+                    <div style={{
+                      padding: '14px 20px',
+                      background: '#faf6ee',
+                      border: '1px solid #ebd9bf',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginTop: 'auto'
+                    }}>
+                      <div className="skeleton" style={{ width: '150px', height: '16px' }} />
+                      <div className="skeleton" style={{ width: '180px', height: '16px' }} />
                     </div>
                   </div>
                 )}
@@ -1316,14 +1395,39 @@ export function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {auditLogs.map((log) => (
-                      <tr key={log.id} style={{ borderBottom: '1px solid #eee7da' }}>
-                        <td style={{ padding: '18px 24px', color: 'var(--text-muted)' }}>
-                          {log.id.slice(0, 18)}...
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-faint)' }}>
-                            {new Date(log.created_at).toLocaleTimeString()}
-                          </div>
-                        </td>
+                    {isLogsLoading ? (
+                      [1, 2, 3, 4].map((i) => (
+                        <tr key={i} style={{ borderBottom: '1px solid #eee7da' }}>
+                          <td style={{ padding: '18px 24px' }}>
+                            <div className="skeleton" style={{ width: '130px', height: '16px', marginBottom: '6px' }} />
+                            <div className="skeleton" style={{ width: '80px', height: '12px' }} />
+                          </td>
+                          <td style={{ padding: '18px 24px' }}>
+                            <div className="skeleton" style={{ width: '160px', height: '18px' }} />
+                          </td>
+                          <td style={{ padding: '18px 24px' }}>
+                            <div className="skeleton" style={{ width: '260px', height: '16px' }} />
+                          </td>
+                          <td style={{ padding: '18px 24px' }}>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <div className="skeleton" style={{ width: '85px', height: '24px', borderRadius: '6px' }} />
+                              <div className="skeleton" style={{ width: '95px', height: '24px', borderRadius: '6px' }} />
+                            </div>
+                          </td>
+                          <td style={{ padding: '18px 24px', textAlign: 'right' }}>
+                            <div className="skeleton" style={{ width: '65px', height: '20px', marginLeft: 'auto' }} />
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      auditLogs.map((log) => (
+                        <tr key={log.id} style={{ borderBottom: '1px solid #eee7da' }}>
+                          <td style={{ padding: '18px 24px', color: 'var(--text-muted)' }}>
+                            {log.id.slice(0, 18)}...
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-faint)' }}>
+                              {new Date(log.created_at).toLocaleTimeString()}
+                            </div>
+                          </td>
                         <td style={{ padding: '18px 24px', fontWeight: 'bold', color: '#121212' }}>
                           {log.pipeline_name || log.pipeline_id || 'Direct'}
                         </td>
@@ -1351,7 +1455,7 @@ export function App() {
                           {log.latency_ms} ms
                         </td>
                       </tr>
-                    ))}
+                    )))}
                   </tbody>
                 </table>
               </div>

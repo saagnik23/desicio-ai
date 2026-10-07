@@ -178,3 +178,39 @@ textarea:focus, input:focus, select:focus {
 .pulse-indicator {
   animation: subtlePulse 1.8s infinite ease-in-out;
 }
+
+/* Creamy Luxury Skeleton Shimmer Loading */
+@keyframes skeletonShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f4ebd8 0%,
+    #fcf8f0 35%,
+    #fffdf9 50%,
+    #fcf8f0 65%,
+    #f4ebd8 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s infinite ease-in-out;
+  border-radius: 8px;
+}
+
+.skeleton-card {
+  background: #ffffff;
+  border: 1.5px solid #ebd9bf;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 4px 14px rgba(70, 55, 30, 0.03);
+}
+
+.skeleton-pulse {
+  animation: subtlePulse 1.4s infinite ease-in-out;
+}
