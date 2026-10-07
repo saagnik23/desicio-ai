@@ -323,9 +323,11 @@ export function App() {
   const [apiKey, setApiKey] = useState<string>(
     import.meta.env.VITE_TYPESAFE_API_KEY || "apikey_2190cc35b50c5e6947d48adb1452b4e33147_e88ecf86c6943f13bc3cf8eb0324f852f85d08160bd41c91841b62bc9309fadb"
   );
-  const [backendUrl, setBackendUrl] = useState<string>(
-    import.meta.env.VITE_API_URL || "http://localhost:8000"
-  );
+  const [backendUrl, setBackendUrl] = useState<string>(() => {
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    if (isHttps) return "";
+    return import.meta.env.VITE_API_URL || "http://localhost:8000";
+  });
   const [backendOnline, setBackendOnline] = useState<boolean>(true);
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
@@ -336,20 +338,20 @@ export function App() {
 
   // Check backend health
   useEffect(() => {
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const isLocalhost = backendUrl.includes('localhost') || backendUrl.includes('127.0.0.1');
+
     const checkHealth = async () => {
       try {
-        const res = await fetch(`${backendUrl}/api/v1/health`);
-        if (res.ok) {
-          setBackendOnline(true);
-        } else {
-          setBackendOnline(true);
-        }
-      } catch (e) {
+        const pingUrl = (isHttps && isLocalhost) || !backendUrl ? '/api/health' : `${backendUrl}/api/v1/health`;
+        const res = await fetch(pingUrl);
+        setBackendOnline(res.ok);
+      } catch {
         setBackendOnline(true);
       }
     };
     checkHealth();
-    const interval = setInterval(checkHealth, 12000);
+    const interval = setInterval(checkHealth, 15000);
     return () => clearInterval(interval);
   }, [backendUrl]);
 
@@ -357,8 +359,12 @@ export function App() {
   useEffect(() => {
     const fetchHistory = async () => {
       setIsLogsLoading(true);
+      const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+      const isLocalhost = backendUrl.includes('localhost') || backendUrl.includes('127.0.0.1');
+      const historyUrl = (isHttps && isLocalhost) || !backendUrl ? '/api/history?limit=20' : `${backendUrl}/api/v1/history?limit=20`;
+
       try {
-        const res = await fetch(`${backendUrl}/api/v1/history?limit=20`);
+        const res = await fetch(historyUrl);
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
@@ -405,31 +411,65 @@ export function App() {
 
     try {
       let data: any = null;
+      const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+      const isLocalhost = backendUrl.includes('localhost') || backendUrl.includes('127.0.0.1');
+      const canCallCustomBackend = backendUrl && !(isHttps && isLocalhost);
 
-      if (backendOnline) {
-        const endpoint = isCustomSchema 
-          ? `${backendUrl}/api/v1/evaluate` 
-          : `${backendUrl}/api/v1/pipelines/${selectedPipeline.id}/run`;
-        
-        const payload = isCustomSchema 
-          ? { state: customState, questions: parsedQuestions }
-          : { state: customState };
+      // Tier 1: Call configured external backend if not blocked by mixed-content
+      if (canCallCustomBackend) {
+        try {
+          const endpoint = isCustomSchema 
+            ? `${backendUrl}/api/v1/evaluate` 
+            : `${backendUrl}/api/v1/pipelines/${selectedPipeline.id}/run`;
+          
+          const payload = isCustomSchema 
+            ? { state: customState, questions: parsedQuestions }
+            : { state: customState };
 
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Desicio-API-Key': apiKey,
-          },
-          body: JSON.stringify(payload)
-        });
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Desicio-API-Key': apiKey,
+            },
+            body: JSON.stringify(payload)
+          });
 
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({ detail: res.statusText }));
-          throw new Error(errData.detail || "Backend evaluation failed");
+          if (res.ok) {
+            data = await res.json();
+          }
+        } catch (err) {
+          console.warn("Custom backend request failed, falling back to Vercel/Direct:", err);
         }
-        data = await res.json();
-      } else {
+      }
+
+      // Tier 2: Call Vercel Serverless /api/evaluate with Neon Postgres persistence
+      if (!data) {
+        try {
+          const res = await fetch('/api/evaluate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Desicio-API-Key': apiKey,
+            },
+            body: JSON.stringify({
+              state: customState,
+              questions: parsedQuestions,
+              model: "jev-latest",
+              pipeline_id: isCustomSchema ? 'custom' : selectedPipeline.id
+            })
+          });
+
+          if (res.ok) {
+            data = await res.json();
+          }
+        } catch (err) {
+          console.warn("Vercel Serverless /api/evaluate failed, falling back to Direct Jev Engine:", err);
+        }
+      }
+
+      // Tier 3: Direct TypeSafe Jev System 1 Engine inference (Guaranteed client-side fallback)
+      if (!data) {
         const directRes = await fetch("https://api.typesafe.ai/v1/systemone", {
           method: 'POST',
           headers: {
@@ -445,7 +485,7 @@ export function App() {
 
         if (!directRes.ok) {
           const errBody = await directRes.json().catch(() => ({ detail: directRes.statusText }));
-          throw new Error(JSON.stringify(errBody));
+          throw new Error(typeof errBody === 'object' ? JSON.stringify(errBody) : String(errBody));
         }
 
         const directData = await directRes.json();
@@ -462,6 +502,13 @@ export function App() {
           usage: directData.usage || {},
           latency_ms: duration
         };
+
+        // Asynchronously record to Neon database via /api/history
+        fetch('/api/history', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).catch(() => {});
       }
 
       const totalTime = Math.round(performance.now() - start);
@@ -588,17 +635,17 @@ export function App() {
             textTransform: 'uppercase',
             padding: '6px 14px',
             borderRadius: '20px',
-            background: '#eef4e6',
-            border: '1.5px solid #d3e2be',
-            color: '#3f5621'
+            background: backendOnline ? '#eef4e6' : '#fef4e6',
+            border: `1.5px solid ${backendOnline ? '#d3e2be' : '#f5d9ad'}`,
+            color: backendOnline ? '#3f5621' : '#8a5314'
           }}>
             <div style={{
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: '#5f822e'
+              background: backendOnline ? '#5f822e' : '#d97706'
             }} />
-            SYSTEM 1 ACTIVE
+            {backendOnline ? 'SYSTEM 1 ACTIVE' : 'DIRECT INFERENCE'}
           </div>
 
           <button
