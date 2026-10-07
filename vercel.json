@@ -1,4 +1,11 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/dist"
+  "outputDirectory": "frontend/dist",
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://niathack1.vercel.app/$1",
+      "permanent": true
+    }
+  ]
 }

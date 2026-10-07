@@ -406,7 +406,7 @@ export const DecisionEfficiencyLab: React.FC = () => {
 
             // Normalized marker progress: faster models reach 100% early
             // Calculate progress based on relative speed to baseline (faster models move quicker)
-            const relativeMultiplier = baselineModel.medianLatencyMs / model.medianLatencyMs;
+            // const relativeMultiplier = baselineModel.medianLatencyMs / model.medianLatencyMs; // duplicate removed
             const progress = Math.min(1, animProgress * relativeMultiplier);
             const clampedProgress = progress;
             const isComplete = clampedProgress >= 1;
