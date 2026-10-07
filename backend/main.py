@@ -33,10 +33,7 @@ app.add_middleware(
 )
 
 TYPESAFE_API_URL = "https://api.typesafe.ai/v1/systemone"
-DEFAULT_TYPESAFE_KEY = os.getenv(
-    "TYPESAFE_API_KEY",
-    "apikey_2190cc35b50c5e6947d48adb1452b4e33147_e88ecf86c6943f13bc3cf8eb0324f852f85d08160bd41c91841b62bc9309fadb",
-)
+DEFAULT_TYPESAFE_KEY = os.getenv("TYPESAFE_API_KEY", "")
 
 # =========================================================================
 # Neon Serverless Postgres Client

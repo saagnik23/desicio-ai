@@ -119,8 +119,8 @@ cd desicio-ai
 ### 2. Configure Environment Variables
 Create `.env` in the root and in `backend/`:
 ```env
-TYPESAFE_API_KEY="apikey_2190cc35b50c5e6947d48adb1452b4e33147_e88ecf86c6943f13bc3cf8eb0324f852f85d08160bd41c91841b62bc9309fadb"
-DATABASE_URL="postgresql://neondb_owner:npg_Rhm6BD3zbPat@ep-curly-field-b5qbxvgh.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+TYPESAFE_API_KEY="your_typesafe_api_key_here"
+DATABASE_URL="postgresql://neondb_owner:your_password_here@ep-curly-field-b5qbxvgh.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require"
 ```
 
 ### 3. Start the Backend (FastAPI)

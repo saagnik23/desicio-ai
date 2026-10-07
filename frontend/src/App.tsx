@@ -824,8 +824,8 @@ export function App() {
   ]);
   const [isLogsLoading, setIsLogsLoading] = useState<boolean>(false);
 
-  // Internal API Configuration (protected from client exposure)
-  const apiKey = import.meta.env.VITE_TYPESAFE_API_KEY || "apikey_2190cc35b50c5e6947d48adb1452b4e33147_e88ecf86c6943f13bc3cf8eb0324f852f85d08160bd41c91841b62bc9309fadb";
+  // Internal API Configuration (strictly from environment variable)
+  const apiKey = import.meta.env.VITE_TYPESAFE_API_KEY || "";
   const backendUrl = import.meta.env.VITE_API_URL || "";
   const [backendOnline, setBackendOnline] = useState<boolean>(true);
 
