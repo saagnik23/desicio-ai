@@ -120,7 +120,7 @@ cd desicio-ai
 Create `.env` in the root and in `backend/`:
 ```env
 TYPESAFE_API_KEY="your_typesafe_api_key_here"
-DATABASE_URL="postgresql://neondb_owner:your_password_here@ep-curly-field-b5qbxvgh.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL="postgresql://user:password@ep-example-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
 ```
 
 ### 3. Start the Backend (FastAPI)
