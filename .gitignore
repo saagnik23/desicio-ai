@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.local
+.DS_Store
+
+# Build artifacts
+dist/
+build/
+.railway/
+.vercel/
+*.log
