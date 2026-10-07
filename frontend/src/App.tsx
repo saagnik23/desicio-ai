@@ -880,6 +880,7 @@ export function App() {
 
   // Judge Scenario Selection
   const [selectedScenario, setSelectedScenario] = useState<JudgeScenario | null>(JUDGE_SCENARIOS[0]);
+  const [showVideoDemo, setShowVideoDemo] = useState<boolean>(false);
 
   // Sample cycling & reset feedback
   const [resetFeedback, setResetFeedback] = useState<boolean>(false);
@@ -1226,6 +1227,135 @@ export function App() {
         </div>
       </header>
 
+      {/* AI Video Demonstration Modal */}
+      {showVideoDemo && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(28, 25, 23, 0.78)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '24px'
+        }}>
+          <div className="boutique-card" style={{
+            width: '100%',
+            maxWidth: '1040px',
+            background: 'var(--bg-card)',
+            borderRadius: '16px',
+            overflow: 'hidden',
+            border: '2px solid var(--border-dark)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '16px 24px',
+              borderBottom: '1.5px solid var(--border-dark)',
+              background: 'var(--bg-creamy)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  background: '#eb5e3e',
+                  color: '#ffffff',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 900,
+                  fontSize: '13px'
+                }}>▶</div>
+                <div>
+                  <h3 style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '1.18rem',
+                    fontWeight: 800,
+                    margin: 0,
+                    color: 'var(--text-main)'
+                  }}>
+                    DESICIO.AI — FULL WORKFLOW DEMONSTRATION (AI VOICE)
+                  </h3>
+                  <div style={{ fontFamily: 'var(--font-typewriter)', fontSize: '0.8rem', color: 'var(--text-faint)' }}>
+                    High-Definition 1080p Walkthrough • Narrated by AI
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <a
+                  href="/demo_walkthrough.mp4"
+                  download="desicio_ai_workflow_demo.mp4"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    color: 'var(--text-main)',
+                    textDecoration: 'none',
+                    padding: '6px 14px',
+                    borderRadius: '8px',
+                    border: '1.5px solid var(--border-dark)',
+                    background: '#ffffff'
+                  }}
+                >
+                  ↓ Download MP4
+                </a>
+                <button
+                  onClick={() => setShowVideoDemo(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '1.6rem',
+                    cursor: 'pointer',
+                    color: 'var(--text-main)',
+                    fontWeight: 800,
+                    lineHeight: 1
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Video Player */}
+            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: '#000000' }}>
+              <video
+                controls
+                autoPlay
+                src="/demo_walkthrough.mp4"
+                style={{ width: '100%', height: '100%', display: 'block' }}
+              />
+            </div>
+
+            {/* Modal Footer Chapters */}
+            <div style={{
+              padding: '14px 24px',
+              background: 'var(--bg-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '0.86rem',
+              color: 'var(--text-muted)',
+              borderTop: '1px solid var(--border-dark)'
+            }}>
+              <div>
+                <strong style={{ color: 'var(--text-main)' }}>Chapters:</strong> 1. LLM Problem • 2. System 1 Philosophy • 3. 3-Step Pipeline • 4. Live Crisis Demo • 5. Benchmarks & Neon Postgres • 6. Summary
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text-espresso)' }}>
+                1080p Full HD • 1m 58s
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Workspace */}
       <main style={{ flex: 1, padding: '48px 56px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
         {/* TAB 1: PLAYGROUND */}
@@ -1273,7 +1403,29 @@ export function App() {
                   We love deterministic type safety, calibrated probabilities, and joyful, zero-hallucination execution.
                 </p>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', marginTop: '8px' }}>
+                  <button
+                    onClick={() => setShowVideoDemo(true)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      background: 'var(--text-main)',
+                      color: 'var(--bg-primary)',
+                      border: '2px solid var(--text-main)',
+                      padding: '12px 24px',
+                      borderRadius: '30px',
+                      fontFamily: 'var(--font-display)',
+                      fontWeight: 800,
+                      fontSize: '0.95rem',
+                      cursor: 'pointer',
+                      boxShadow: '4px 4px 0 rgba(28, 25, 23, 0.25)',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <Play size={16} fill="currentColor" /> WATCH AI VIDEO DEMO (2 MIN)
+                  </button>
+
                   <span 
                     onClick={() => {
                       const el = document.getElementById('pipeline-section');
@@ -1281,7 +1433,7 @@ export function App() {
                     }}
                     style={{
                       fontFamily: 'var(--font-typewriter)',
-                      fontSize: '1.1rem',
+                      fontSize: '1.05rem',
                       color: 'var(--text-main)',
                       textDecoration: 'underline',
                       cursor: 'pointer',
@@ -1291,16 +1443,18 @@ export function App() {
                       fontWeight: 700
                     }}
                   >
-                    Schedule a decision <ArrowRight size={16} />
+                    Explore Pipelines <ArrowRight size={16} />
                   </span>
-
-                  <span style={{ color: 'var(--text-faint)' }}>•</span>
 
                   <span style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '0.92rem',
+                    fontSize: '0.88rem',
                     color: 'var(--text-espresso)',
-                    fontWeight: 600
+                    fontWeight: 600,
+                    background: '#f2f5e8',
+                    padding: '6px 14px',
+                    borderRadius: '16px',
+                    border: '1.5px solid #d3e2be'
                   }}>
                     ~120ms Latency • 20× Faster vs GPT-4o
                   </span>
