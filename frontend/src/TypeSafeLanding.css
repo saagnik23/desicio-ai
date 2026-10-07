@@ -1,0 +1,178 @@
+/* TypeSafe AI Inspired Retro-Modern Landing & OS Benchmark System */
+
+/* Desicio.ai: Ultra-Fast System 1 High-Frequency Glide */
+@keyframes sliderGlideDesicioFast {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(54px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes sliderGlide1 {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(54px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes sliderGlide2 {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(-16px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes sliderGlide3 {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(30px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes sliderGlide4 {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(-22px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes sliderGlide5 {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(18px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes gliderBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* Halftone stipple canvas */
+.retro-halftone-bg {
+  background-color: #f7a8c4;
+  background-image: 
+    radial-gradient(#1c1917 1px, transparent 1px),
+    radial-gradient(circle at 18% 45%, #ec4899 0%, transparent 60%),
+    radial-gradient(circle at 82% 38%, #f472b6 0%, transparent 55%),
+    linear-gradient(135deg, #fbcfe8 0%, #f472b6 50%, #f9a8d4 100%);
+  background-size: 8px 8px, 100% 100%, 100% 100%, 100% 100%;
+  position: relative;
+  border: 3px solid #1c1917;
+  border-radius: 12px;
+  box-shadow: 0 0 0 4px #ec4899, 0 16px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+/* Retro Mac OS Window styling */
+.retro-os-window {
+  background: #e6e6e6;
+  border: 2px solid #1c1917;
+  box-shadow: 4px 4px 0px #1c1917;
+  font-family: 'Courier Prime', 'Space Mono', monospace;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.retro-os-window:hover {
+  box-shadow: 6px 6px 0px #1c1917;
+}
+
+.retro-os-titlebar {
+  background: #1c1917;
+  color: #faf7ea;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justifyContent: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 2px solid #1c1917;
+}
+
+.retro-os-titlebar.striped {
+  background: repeating-linear-gradient(
+    0deg,
+    #1c1917,
+    #1c1917 2px,
+    #faf7ea 2px,
+    #faf7ea 4px
+  );
+  color: #1c1917;
+}
+
+.retro-os-title-text {
+  background: #1c1917;
+  color: #fff;
+  padding: 2px 6px;
+}
+
+/* Stipple bottom pattern */
+.retro-stipple-grid {
+  background-image: radial-gradient(#1c1917 1px, transparent 1px);
+  background-size: 4px 4px;
+  height: 28px;
+  border-top: 1px dashed #1c1917;
+}
+
+/* Cursor following button styling */
+.cursor-video-button {
+  position: absolute;
+  pointer-events: auto;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+  background: #ec4899;
+  color: #1c1917;
+  border: 2px solid #1c1917;
+  box-shadow: 3px 3px 0px #1c1917;
+  padding: 8px 18px;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.06s ease-out, opacity 0.2s ease, background 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.cursor-video-button:hover {
+  background: #f472b6;
+  box-shadow: 5px 5px 0px #1c1917;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.cursor-video-button:active {
+  box-shadow: 1px 1px 0px #1c1917;
+  transform: translate(-50%, -50%) scale(0.98);
+}
+
+/* Giant typography */
+.typesafe-giant-hero {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 7.5vw, 6.2rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  color: #1c1917;
+  text-transform: none;
+  word-break: break-word;
+  user-select: none;
+}
+
+/* News cards */
+.retro-news-banner {
+  background: #e2e2e2;
+  border: 2px solid #1c1917;
+  box-shadow: 3px 3px 0px #1c1917;
+  padding: 8px 14px;
+  font-family: 'Courier Prime', 'Space Mono', monospace;
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 380px;
+  width: 100%;
+}

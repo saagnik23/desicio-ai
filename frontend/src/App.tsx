@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import LatticeLoader from './LatticeLoader';
+import { TypeSafeLanding } from './TypeSafeLanding';
+import { DecisionEfficiencyLab } from './DecisionEfficiencyLab';
 import { 
   Zap, 
   Terminal, 
@@ -793,17 +795,17 @@ function LatencyRaceBar({ systemOneMs = 168 }: { systemOneMs?: number }) {
 }
 
 export function App() {
-  const getInitialTab = (): 'playground' | 'benchmarks' | 'logs' => {
+  const getInitialTab = (): 'overview' | 'lab' | 'playground' | 'benchmarks' | 'logs' => {
     if (typeof window !== 'undefined' && window.location.hash) {
       const hash = window.location.hash.replace('#', '');
-      if (['playground', 'benchmarks', 'logs'].includes(hash)) {
+      if (['overview', 'lab', 'playground', 'benchmarks', 'logs'].includes(hash)) {
         return hash as any;
       }
     }
-    return 'playground';
+    return 'overview';
   };
 
-  const [activeTab, setActiveTab] = useState<'playground' | 'benchmarks' | 'logs'>(getInitialTab);
+  const [activeTab, setActiveTab] = useState<'overview' | 'lab' | 'playground' | 'benchmarks' | 'logs'>(getInitialTab);
   const [selectedPipeline, setSelectedPipeline] = useState<Pipeline>(PRESET_PIPELINES[0]);
   const [customState, setCustomState] = useState<string>(PRESET_PIPELINES[0].sample_state);
   
@@ -1115,7 +1117,45 @@ export function App() {
         zIndex: 50
       }}>
         {/* Left Nav Links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+          <button
+            onClick={() => setActiveTab('overview')}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-display)',
+              fontSize: '0.92rem',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: activeTab === 'overview' ? 'var(--text-main)' : 'var(--text-faint)',
+              borderBottom: activeTab === 'overview' ? '2px solid var(--text-main)' : '2px solid transparent',
+              paddingBottom: '4px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Overview
+          </button>
+          <button
+            onClick={() => setActiveTab('lab')}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-display)',
+              fontSize: '0.92rem',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: activeTab === 'lab' ? 'var(--text-main)' : 'var(--text-faint)',
+              borderBottom: activeTab === 'lab' ? '2px solid var(--text-main)' : '2px solid transparent',
+              paddingBottom: '4px',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Efficiency Lab
+          </button>
           <button
             onClick={() => setActiveTab('playground')}
             style={{
@@ -1358,6 +1398,26 @@ export function App() {
 
       {/* Main Workspace */}
       <main style={{ flex: 1, padding: '48px 56px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
+        {/* TAB 0: OVERVIEW (TYPESAFE.AI INSPIRED LANDING PAGE & RETRO OS BENCHMARK GRAPH) */}
+        {activeTab === 'overview' && (
+          <TypeSafeLanding
+            onTryPlayground={() => {
+              setActiveTab('playground');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onWatchVideo={() => setShowVideoDemo(true)}
+            onViewBenchmarks={() => {
+              setActiveTab('benchmarks');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
+
+        {/* TAB 0.5: DECISION EFFICIENCY LAB (STANDALONE RETRO WORKLOAD LAB) */}
+        {activeTab === 'lab' && (
+          <DecisionEfficiencyLab />
+        )}
+
         {/* TAB 1: PLAYGROUND */}
         {activeTab === 'playground' && (
           <div>
