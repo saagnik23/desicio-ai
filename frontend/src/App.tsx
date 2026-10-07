@@ -626,7 +626,7 @@ export function App() {
           zIndex: 100,
           padding: '24px'
         }}>
-          <div className="boutique-card" style={{ width: '100%', maxWidth: '560px', padding: '36px', background: '#fffefb' }}>
+          <div className="boutique-card" style={{ width: '100%', maxWidth: '560px', padding: '36px', background: 'var(--bg-card)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '1.5px solid var(--border-dark)', paddingBottom: '16px' }}>
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Settings size={20} /> CONNECTION & ENGINE CONFIG
@@ -819,7 +819,7 @@ export function App() {
                     style={{
                       padding: '28px 22px',
                       cursor: 'pointer',
-                      background: isSelected ? '#fffefb' : 'var(--bg-card)',
+                      background: isSelected ? 'var(--bg-card)' : 'rgba(255, 255, 255, 0.35)',
                       border: isSelected ? '2px solid var(--text-main)' : '1.5px solid var(--border-color)',
                       borderRadius: '16px',
                       boxShadow: isSelected ? '4px 5px 0px var(--text-main)' : '2px 2px 0px rgba(46, 28, 20, 0.05)',
@@ -916,7 +916,7 @@ export function App() {
               {/* Left Column: Context Payload & Question Schema */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {/* State Input Card */}
-                <div className="glass-panel" style={{ padding: '28px', background: '#fffefb' }}>
+                <div className="glass-panel" style={{ padding: '28px', background: 'var(--bg-card)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
                     <label style={{
                       fontFamily: 'var(--font-display)',
@@ -963,7 +963,7 @@ export function App() {
                 </div>
 
                 {/* Questions Schema Card */}
-                <div className="glass-panel" style={{ padding: '28px', background: '#fffefb' }}>
+                <div className="glass-panel" style={{ padding: '28px', background: 'var(--bg-card)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                     <label style={{
                       fontFamily: 'var(--font-display)',
@@ -1059,7 +1059,7 @@ export function App() {
                   <div style={{
                     padding: '12px 22px',
                     borderRadius: '10px',
-                    background: '#fffefb',
+                    background: 'var(--bg-card)',
                     border: '1.5px solid var(--border-dark)',
                     display: 'flex',
                     alignItems: 'center',
@@ -1084,7 +1084,7 @@ export function App() {
               </div>
 
               {/* Right Column: Execution Output */}
-              <div className="glass-panel" style={{ padding: '28px', background: '#fffefb', display: 'flex', flexDirection: 'column' }}>
+              <div className="glass-panel" style={{ padding: '28px', background: 'var(--bg-card)', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1.5px solid var(--border-dark)', paddingBottom: '14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Cpu size={20} />
@@ -1497,7 +1497,7 @@ export function App() {
               </div>
 
               {/* GPT-4o */}
-              <div className="glass-panel" style={{ padding: '32px', background: '#ffffff' }}>
+              <div className="glass-panel" style={{ padding: '32px', background: 'var(--bg-card)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
                   <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-muted)' }}>
                     GPT-4o (OpenAI)
@@ -1537,7 +1537,7 @@ export function App() {
               </div>
 
               {/* Claude 3.5 Sonnet */}
-              <div className="glass-panel" style={{ padding: '32px', background: '#ffffff' }}>
+              <div className="glass-panel" style={{ padding: '32px', background: 'var(--bg-card)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
                   <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-muted)' }}>
                     Claude 3.5 Sonnet
@@ -1609,15 +1609,15 @@ export function App() {
             </div>
 
             {auditLogs.length === 0 ? (
-              <div className="glass-panel" style={{ padding: '60px', textAlign: 'center', background: '#ffffff', borderRadius: '14px' }}>
+              <div className="glass-panel" style={{ padding: '60px', textAlign: 'center', background: 'var(--bg-card)', borderRadius: '14px' }}>
                 <Clock size={36} color="#888888" style={{ marginBottom: '14px' }} />
                 <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>No audit logs recorded yet. Run a decision in the Playground!</p>
               </div>
             ) : (
-              <div className="boutique-card" style={{ overflow: 'hidden', background: '#ffffff', borderRadius: '14px' }}>
+              <div className="boutique-card" style={{ overflow: 'hidden', background: 'var(--bg-card)', borderRadius: '14px' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1.5px solid var(--border-dark)', background: '#faf6ee', color: 'var(--text-main)', fontFamily: 'var(--font-display)' }}>
+                    <tr style={{ borderBottom: '1.5px solid var(--border-dark)', background: 'var(--bg-card-alt)', color: 'var(--text-main)', fontFamily: 'var(--font-display)' }}>
                       <th style={{ padding: '16px 22px', fontWeight: 800, letterSpacing: '0.04em' }}>ID / TIMESTAMP</th>
                       <th style={{ padding: '16px 22px', fontWeight: 800, letterSpacing: '0.04em' }}>PIPELINE</th>
                       <th style={{ padding: '16px 22px', fontWeight: 800, letterSpacing: '0.04em' }}>STATE SNIPPET</th>
