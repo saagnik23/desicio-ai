@@ -446,8 +446,8 @@ function SpeedometerDial({
         </span>
       </div>
 
-      <div style={{ position: 'relative', width: '220px', height: '142px', display: 'flex', justifyContent: 'center' }}>
-        <svg width="220" height="142" viewBox="0 0 200 142">
+      <div style={{ position: 'relative', width: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <svg width="220" height="135" viewBox="0 0 200 135" style={{ overflow: 'visible' }}>
           <defs>
             <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#667838" />
@@ -492,8 +492,7 @@ function SpeedometerDial({
         </svg>
 
         <div style={{
-          position: 'absolute',
-          bottom: '0px',
+          marginTop: '6px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center'
