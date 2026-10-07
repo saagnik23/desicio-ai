@@ -405,9 +405,10 @@ export const DecisionEfficiencyLab: React.FC = () => {
             const multiplierStr = isBaseline ? '1.0×' : `${relativeMultiplier.toFixed(1)}×`;
 
             // Normalized marker progress: faster models reach 100% early
-            const durationRatio = model.medianLatencyMs / 12000; // max model 12,000ms
-            const rawProgress = animProgress / Math.max(0.08, durationRatio);
-            const clampedProgress = Math.min(1, rawProgress);
+            // Calculate progress based on relative speed to baseline (faster models move quicker)
+            const relativeMultiplier = baselineModel.medianLatencyMs / model.medianLatencyMs;
+            const progress = Math.min(1, animProgress * relativeMultiplier);
+            const clampedProgress = progress;
             const isComplete = clampedProgress >= 1;
 
             return (

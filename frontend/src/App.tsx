@@ -827,7 +827,8 @@ export function App() {
   const [isLogsLoading, setIsLogsLoading] = useState<boolean>(false);
 
   // Internal API Configuration (strictly from environment variable)
-  const apiKey = import.meta.env.VITE_TYPESAFE_API_KEY || "";
+  // NOTE: API keys are not used on the client side to avoid exposure.
+  const apiKey = ""; // intentionally left blank
   const backendUrl = import.meta.env.VITE_API_URL || "";
   const [backendOnline, setBackendOnline] = useState<boolean>(true);
 
