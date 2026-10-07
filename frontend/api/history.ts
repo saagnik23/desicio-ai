@@ -1,5 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 
+declare const process: any;
+
 const DATABASE_URL = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_Rhm6BD3zbPat@ep-curly-field-b5qbxvgh.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
 
 export default async function handler(req: any, res: any) {
