@@ -35,6 +35,7 @@ interface Pipeline {
   description: string;
   category: string;
   sample_state: string;
+  sample_states?: string[];
   accentColor: string;
   accentBg: string;
   badgeType: 'flower' | 'stamp' | 'starburst' | 'planet';
@@ -50,6 +51,11 @@ const PRESET_PIPELINES: Pipeline[] = [
     description: "Classifies customer intent, measures urgency, and determines human escalation threshold in sub-200ms.",
     category: "Customer Operations",
     sample_state: "Customer: I was billed $499 twice on my card this morning and my team cannot access the dashboard during our product launch. If this is not fixed in 1 hour I will cancel and dispute the charge.",
+    sample_states: [
+      "Customer: I was billed $499 twice on my card this morning and my team cannot access the dashboard during our product launch. If this is not fixed in 1 hour I will cancel and dispute the charge.",
+      "Customer: Hi team, quick question - where can I download our monthly invoice as a PDF? No rush at all, just doing our quarterly bookkeeping.",
+      "Customer: Urgent - Getting a 500 internal server error whenever our data team tries to export daily reports to CSV. Happening for all team members."
+    ],
     accentColor: "#eb5e3e",
     accentBg: "#fdf0ec",
     badgeType: "flower",
@@ -83,6 +89,11 @@ const PRESET_PIPELINES: Pipeline[] = [
     description: "Scores transaction risk, flags suspicious signals, and triggers automated account freezes.",
     category: "Risk & Security",
     sample_state: "Transaction: $4,850.00 luxury watch purchase from IP in Lagos, Nigeria. Account owner registered in Chicago, USA with last physical card swipe 14 minutes ago in Chicago.",
+    sample_states: [
+      "Transaction: $4,850.00 luxury watch purchase from IP in Lagos, Nigeria. Account owner registered in Chicago, USA with last physical card swipe 14 minutes ago in Chicago.",
+      "Transaction: $14.50 morning coffee purchase at local cafe in Chicago, USA. Consistent with 2-year daily routine and verified Apple Pay token.",
+      "Transaction: $1,250.00 cryptocurrency voucher purchase at 3:30 AM UTC from unrecognized mobile device behind anonymizing VPN tunnel."
+    ],
     accentColor: "#667838",
     accentBg: "#f2f5e8",
     badgeType: "stamp",
@@ -116,6 +127,11 @@ const PRESET_PIPELINES: Pipeline[] = [
     description: "Instantly qualifies inbound sales inquiries into Enterprise, Mid-Market, or Self-Serve tiers.",
     category: "Revenue Operations",
     sample_state: "Lead: VP of Engineering at a 1,200 person FinTech company. Message: Looking to replace our slow OpenAI classification pipeline across 4M daily transactions. Budget is approved for Q4 rollout.",
+    sample_states: [
+      "Lead: VP of Engineering at a 1,200 person FinTech company. Message: Looking to replace our slow OpenAI classification pipeline across 4M daily transactions. Budget is approved for Q4 rollout.",
+      "Lead: University student working on senior capstone project. Message: Can I apply for a free community plan to test my student prototype?",
+      "Lead: Head of Operations at 110-person logistics startup. Message: Evaluating high-speed routing engines for our real-time dispatch queue ($50k budget)."
+    ],
     accentColor: "#fabc22",
     accentBg: "#fef8e7",
     badgeType: "starburst",
@@ -148,6 +164,11 @@ const PRESET_PIPELINES: Pipeline[] = [
     description: "Sub-100ms routing layer for multi-agent architectures to decide which tool to dispatch.",
     category: "AI Systems",
     sample_state: "Agent Step: User asked to refund $1,200 to customer account #8942 and send an apology note.",
+    sample_states: [
+      "Agent Step: User asked to refund $1,200 to customer account #8942 and send an apology note.",
+      "Agent Step: User asked to look up current stock inventory for SKU-4091 across US and EU warehouse clusters.",
+      "Agent Step: User asked to compose and send a friendly congratulatory email to newly promoted colleague Mark."
+    ],
     accentColor: "#283670",
     accentBg: "#edf0f9",
     badgeType: "planet",
@@ -860,13 +881,50 @@ export function App() {
   // Judge Scenario Selection
   const [selectedScenario, setSelectedScenario] = useState<JudgeScenario | null>(JUDGE_SCENARIOS[0]);
 
+  // Sample cycling & reset feedback
+  const [resetFeedback, setResetFeedback] = useState<boolean>(false);
+  const [sampleIndex, setSampleIndex] = useState<number>(0);
+
   const handleSelectPipeline = (pipeline: Pipeline) => {
     setSelectedPipeline(pipeline);
     setCustomState(pipeline.sample_state);
+    setSampleIndex(0);
     setCustomQuestionsJson(JSON.stringify(pipeline.questions, null, 2));
     setIsCustomSchema(false);
     setSelectedScenario(null);
     setResult(null);
+  };
+
+  const handleResetSample = () => {
+    const samples = selectedPipeline.sample_states && selectedPipeline.sample_states.length > 0
+      ? selectedPipeline.sample_states
+      : [selectedPipeline.sample_state];
+
+    let nextSample = samples[0];
+    if (customState.trim() === samples[sampleIndex % samples.length].trim()) {
+      // If current text is already matching this sample, rotate to next variation
+      const nextIdx = (sampleIndex + 1) % samples.length;
+      setSampleIndex(nextIdx);
+      nextSample = samples[nextIdx];
+    } else {
+      // Otherwise reset back to primary default sample
+      setSampleIndex(0);
+      nextSample = samples[0];
+    }
+
+    setCustomState(nextSample);
+    
+    // Clear previous execution results so the screen resets cleanly
+    setResult(null);
+    setIsCustomSchema(false);
+    setCustomQuestionsJson(JSON.stringify(selectedPipeline.questions, null, 2));
+    setSelectedScenario(null);
+
+    // Provide visual feedback
+    setResetFeedback(true);
+    setTimeout(() => {
+      setResetFeedback(false);
+    }, 1000);
   };
 
   const executeInference = async (
@@ -1020,6 +1078,7 @@ export function App() {
     setSelectedScenario(sc);
     const targetPipeline = PRESET_PIPELINES.find(p => p.id === sc.pipelineId) || PRESET_PIPELINES[0];
     setSelectedPipeline(targetPipeline);
+    setSampleIndex(0);
     setCustomState(sc.scenarioText);
     setCustomQuestionsJson(JSON.stringify(targetPipeline.questions, null, 2));
     setIsCustomSchema(false);
@@ -1666,32 +1725,52 @@ export function App() {
                       <Terminal size={17} /> Input State / Context Payload
                     </label>
                     <button
-                      onClick={() => setCustomState(selectedPipeline.sample_state)}
+                      id="btn-reset-sample"
+                      type="button"
+                      onClick={handleResetSample}
+                      title="Reset sample payload, cycle scenarios, and clear execution results"
                       style={{
-                        background: 'var(--bg-creamy)',
-                        border: '1px solid var(--border-dark)',
-                        color: 'var(--text-main)',
+                        background: resetFeedback ? '#eef4e6' : 'var(--bg-creamy)',
+                        border: `1.5px solid ${resetFeedback ? '#5f822e' : 'var(--border-dark)'}`,
+                        color: resetFeedback ? '#3f5621' : 'var(--text-main)',
                         fontFamily: 'var(--font-display)',
                         fontSize: '0.82rem',
                         fontWeight: 700,
-                        padding: '4px 10px',
+                        padding: '5px 12px',
                         borderRadius: '6px',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '5px'
+                        gap: '6px',
+                        transition: 'all 0.25s ease',
+                        boxShadow: resetFeedback ? '0 0 10px rgba(95, 130, 46, 0.2)' : 'none'
                       }}
                     >
-                      <RotateCcw size={12} /> Reset Sample
+                      <RotateCcw 
+                        size={13} 
+                        style={{ 
+                          transform: resetFeedback ? 'rotate(-360deg)' : 'none', 
+                          transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' 
+                        }} 
+                      />
+                      {resetFeedback ? 'Sample Restored!' : 'Reset Sample'}
                     </button>
                   </div>
 
                   <textarea
+                    id="input-sample-state"
                     rows={6}
                     value={customState}
                     onChange={(e) => setCustomState(e.target.value)}
                     placeholder="Enter customer support ticket, transaction details, agent trace, or raw JSON object..."
-                    style={{ resize: 'vertical', fontSize: '1rem', padding: '14px 18px', lineHeight: '1.55' }}
+                    style={{ 
+                      resize: 'vertical', 
+                      fontSize: '1rem', 
+                      padding: '14px 18px', 
+                      lineHeight: '1.55',
+                      borderColor: resetFeedback ? '#5f822e' : undefined,
+                      transition: 'border-color 0.3s ease'
+                    }}
                   />
                   <span style={{ fontFamily: 'var(--font-typewriter)', fontSize: '0.82rem', color: 'var(--text-faint)', marginTop: '8px', display: 'block' }}>
                     Accepts arbitrary unstructured text, support threads, or serialized JSON payloads without prompt tuning.
