@@ -1,155 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 :root {
-  --bg-primary: #f9f5ed;
-  --bg-secondary: #f4ece0;
-  --bg-creamy: #f6efe3;
-  --bg-card: #ffffff;
-  --bg-card-alt: #fbf7f0;
-  
-  /* Creamy Light Mix Tones */
-  --tint-honey: #fff9ed;
-  --tint-honey-border: #f0dcbe;
-  --tint-sage: #f2f7ef;
-  --tint-sage-border: #d4e3ce;
-  --tint-peach: #fcf3ed;
-  --tint-peach-border: #f2d8c9;
-  --tint-lavender: #f5f1f9;
-  --tint-lavender-border: #ded5e8;
-  --tint-sky: #f1f6fa;
-  --tint-sky-border: #cde0ed;
-  
-  --border-color: #dfd6c6;
-  --border-hover: #121212;
-  --border-dark: #121212;
-  
-  --text-main: #121212;
-  --text-muted: #48433d;
-  --text-faint: #787167;
-  
-  --font-serif: "Times New Roman", Times, Baskerville, Georgia, serif;
+  /* Warm, smooth, creamy paper/parchment palette inspired by Play&Public */
+  --bg-primary: #f7f4ec;
+  --bg-creamy: #fbf8f2;
+  --bg-card: #fffefb;
+  --bg-card-alt: #f3eee3;
+  --bg-subtle: #eee7da;
+
+  /* Deep roasted espresso & charcoal ink typography */
+  --text-espresso: #2e1c14;
+  --text-main: #1c1917;
+  --text-muted: #574f46;
+  --text-faint: #857b70;
+
+  /* Hairline and frame borders */
+  --border-dark: #1c1917;
+  --border-color: #dfd7c7;
+  --border-soft: #e8e2d4;
+
+  /* Playful retro-modern boutique accent palette */
+  --accent-coral: #eb5e3e;
+  --accent-coral-bg: #fdf0ec;
+  --accent-olive: #667838;
+  --accent-olive-bg: #f2f5e8;
+  --accent-mustard: #fabc22;
+  --accent-mustard-bg: #fef8e7;
+  --accent-cobalt: #283670;
+  --accent-cobalt-bg: #edf0f9;
+  --accent-lavender: #9c84af;
+  --accent-lavender-bg: #f7f3f9;
+
+  /* Distinctive Typography Hierarchy */
+  --font-display: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-typewriter: 'Courier Prime', 'Space Mono', monospace;
+  --font-mono: 'Space Mono', monospace;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: var(--font-serif) !important;
 }
 
 body {
   background-color: var(--bg-primary);
   background-image: 
-    radial-gradient(circle at 10% 15%, rgba(255, 245, 225, 0.8) 0%, transparent 45%),
-    radial-gradient(circle at 85% 10%, rgba(242, 247, 239, 0.9) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, rgba(252, 243, 237, 0.8) 0%, transparent 50%),
-    radial-gradient(circle at 90% 80%, rgba(245, 241, 249, 0.7) 0%, transparent 40%);
+    radial-gradient(circle at 15% 10%, rgba(255, 252, 245, 0.7) 0%, transparent 50%),
+    radial-gradient(circle at 85% 20%, rgba(243, 238, 227, 0.6) 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(251, 248, 242, 0.8) 0%, transparent 55%);
   background-attachment: fixed;
   color: var(--text-main);
-  font-family: var(--font-serif) !important;
-  line-height: 1.65;
-  font-size: 17px;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
 
-/* Big, visible, creamy cards */
+/* Typography Utility Classes */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-typewriter {
+  font-family: var(--font-typewriter);
+  font-style: italic;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Tactile boutique paper cards */
+.boutique-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-dark);
+  border-radius: 14px;
+  box-shadow: 3px 3px 0px rgba(28, 25, 23, 0.08);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.boutique-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 5px 0px rgba(28, 25, 23, 0.12);
+}
+
+/* Soft framed card */
 .glass-panel {
   background: var(--bg-card);
   border: 1.5px solid var(--border-color);
-  border-radius: 16px;
-  box-shadow: 
-    0 10px 30px rgba(70, 55, 30, 0.04),
-    0 2px 8px rgba(70, 55, 30, 0.02);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(46, 28, 20, 0.03);
+  transition: all 0.22s ease;
 }
 
 .glass-panel:hover {
-  border-color: #b5a995;
-  box-shadow: 
-    0 16px 40px rgba(70, 55, 30, 0.07),
-    0 4px 12px rgba(70, 55, 30, 0.03);
+  border-color: #c9bea9;
+  box-shadow: 0 8px 24px rgba(46, 28, 20, 0.05);
 }
 
-/* Prominent, satisfying buttons */
+/* Studio Neo-Tactile Action Buttons */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: #121212;
-  color: #ffffff;
-  font-size: 1.08rem;
-  font-weight: bold;
-  padding: 14px 32px;
+  background: var(--text-main);
+  color: #fffefb;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 14px 28px;
   border-radius: 10px;
-  border: 2px solid #121212;
+  border: 1.5px solid var(--text-main);
   cursor: pointer;
-  transition: all 0.2s ease;
-  letter-spacing: 0.01em;
-  box-shadow: 0 4px 14px rgba(18, 18, 18, 0.15);
+  transition: all 0.18s ease;
+  box-shadow: 3px 3px 0px #2e1c14;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #262626;
-  border-color: #262626;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(18, 18, 18, 0.25);
+  background: #332a24;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #2e1c14;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #2e1c14;
 }
 
 .btn-primary:disabled {
-  opacity: 0.35;
+  opacity: 0.45;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+/* Outline Frame Button (like SCHEDULE A CALL) */
+.btn-frame {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg-creamy);
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  border-radius: 6px;
+  border: 1.5px solid var(--text-main);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.btn-frame:hover {
+  background: var(--bg-card-alt);
+  transform: translateY(-1px);
+  box-shadow: 2px 2px 0px var(--text-main);
 }
 
 .btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  background: #ffffff;
-  color: #121212;
-  font-size: 1.02rem;
-  font-weight: bold;
-  padding: 12px 26px;
-  border-radius: 10px;
+  gap: 8px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
   border: 1.5px solid var(--border-color);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
 }
 
 .btn-secondary:hover {
-  background: var(--bg-creamy);
+  background: var(--bg-subtle);
   border-color: var(--border-dark);
 }
 
-/* Bigger, visible form controls */
+/* Forms & Textareas */
 textarea, input, select {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1.5px solid var(--border-color);
-  color: #121212;
-  font-size: 1.05rem;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 1rem;
   border-radius: 10px;
   padding: 14px 18px;
-  line-height: 1.5;
+  line-height: 1.55;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
 }
 
 textarea:focus, input:focus, select:focus {
   outline: none;
-  border-color: #121212;
-  box-shadow: 0 0 0 2px rgba(18, 18, 18, 0.15);
+  border-color: var(--border-dark);
+  box-shadow: 0 0 0 2px rgba(28, 25, 23, 0.12);
 }
 
 /* Code & Raw text blocks */
 .code-block {
-  background: #fdfaf3;
+  background: #fbf7ef;
   border: 1.5px solid var(--border-color);
-  border-radius: 10px;
-  padding: 18px 22px;
-  font-size: 0.96rem;
-  color: #1a1a1a;
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 0.92rem;
+  font-family: var(--font-mono);
+  color: var(--text-espresso);
   overflow-x: auto;
   line-height: 1.6;
 }
@@ -163,16 +233,17 @@ textarea:focus, input:focus, select:focus {
   background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: #cfc5b2;
+  background: #d4cbba;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #b5a995;
 }
 
+/* Subtle pulse */
 @keyframes subtlePulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.92); }
+  50% { opacity: 0.45; transform: scale(0.92); }
 }
 
 .pulse-indicator {
@@ -192,25 +263,31 @@ textarea:focus, input:focus, select:focus {
 .skeleton {
   background: linear-gradient(
     90deg,
-    #f4ebd8 0%,
-    #fcf8f0 35%,
-    #fffdf9 50%,
-    #fcf8f0 65%,
-    #f4ebd8 100%
+    #eee7da 0%,
+    #faf6ee 35%,
+    #fffefb 50%,
+    #faf6ee 65%,
+    #eee7da 100%
   );
   background-size: 200% 100%;
   animation: skeletonShimmer 1.5s infinite ease-in-out;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .skeleton-card {
-  background: #ffffff;
-  border: 1.5px solid #ebd9bf;
+  background: #fffefb;
+  border: 1.5px solid var(--border-color);
   border-radius: 12px;
   padding: 22px;
-  box-shadow: 0 4px 14px rgba(70, 55, 30, 0.03);
+  box-shadow: 0 4px 14px rgba(46, 28, 20, 0.03);
 }
 
-.skeleton-pulse {
-  animation: subtlePulse 1.4s infinite ease-in-out;
+/* Spinning text circle animation for the badge */
+@keyframes spinBadge {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spin-slow {
+  animation: spinBadge 24s linear infinite;
 }
