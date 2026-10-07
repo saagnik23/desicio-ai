@@ -1,4 +1,9 @@
 {
+  "name": "desicio-ai",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build"
+  },
   "dependencies": {
     "@neon/config": "^1.8.4",
     "@neon/env": "^1.5.1",
