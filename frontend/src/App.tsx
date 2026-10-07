@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import LatticeLoader from './LatticeLoader';
 import { 
   Zap, 
   Terminal, 
@@ -409,10 +410,11 @@ function SpeedometerDial({
     return () => clearTimeout(timeout);
   }, [value, max, ratio]);
 
-  // Arc math: 240-degree gauge from -120deg to +120deg
-  const arcLength = 335.1;
+  // Clean 180-degree upper semicircle gauge
+  // Sweep from -90deg (value 0, left) to +90deg (value max, right)
+  const arcLength = 219.91; // PI * 70
   const strokeOffset = arcLength * (1 - animatedRatio);
-  const needleAngle = -120 + animatedRatio * 240;
+  const needleAngle = -90 + animatedRatio * 180;
 
   const activeColor = ratio < 0.33 ? "#667838" : ratio < 0.67 ? "#fabc22" : "#eb5e3e";
 
@@ -421,14 +423,15 @@ function SpeedometerDial({
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      padding: '22px 18px',
+      padding: '24px 20px',
       background: '#ffffff',
-      borderRadius: '14px',
+      borderRadius: '16px',
       border: '1.5px solid var(--border-color)',
       boxShadow: '0 3px 12px rgba(46, 28, 20, 0.04)',
       position: 'relative'
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '6px' }}>
+      {/* Card Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '12px' }}>
         <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.94rem', fontWeight: 800, color: 'var(--text-main)', textTransform: 'uppercase' }}>
           {label}
         </span>
@@ -446,8 +449,9 @@ function SpeedometerDial({
         </span>
       </div>
 
-      <div style={{ position: 'relative', width: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <svg width="220" height="135" viewBox="0 0 200 135" style={{ overflow: 'visible' }}>
+      {/* Semicircular Upper Gauge Area */}
+      <div style={{ position: 'relative', width: '220px', display: 'flex', justifyContent: 'center' }}>
+        <svg width="220" height="118" viewBox="0 0 220 118" style={{ overflow: 'visible' }}>
           <defs>
             <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#667838" />
@@ -456,18 +460,18 @@ function SpeedometerDial({
             </linearGradient>
           </defs>
 
-          {/* Background Arc */}
+          {/* Background Arc (180 deg semicircle, r=70, center=110,95) */}
           <path
-            d="M 30.7 135 A 80 80 0 1 1 169.3 135"
+            d="M 40 95 A 70 70 0 0 1 180 95"
             fill="none"
             stroke="#eee5d3"
             strokeWidth="14"
             strokeLinecap="round"
           />
 
-          {/* Colored Sweep Arc */}
+          {/* Colored Active Sweep Arc */}
           <path
-            d="M 30.7 135 A 80 80 0 1 1 169.3 135"
+            d="M 40 95 A 70 70 0 0 1 180 95"
             fill="none"
             stroke="url(#gaugeGradient)"
             strokeWidth="14"
@@ -477,48 +481,68 @@ function SpeedometerDial({
             style={{ transition: 'stroke-dashoffset 0.85s cubic-bezier(0.16, 1, 0.3, 1)' }}
           />
 
-          {/* Rotating Needle with Center Pivot */}
+          {/* Tick Markers */}
+          <line x1="110" y1="25" x2="110" y2="33" stroke="#d5cca8" strokeWidth="2" />
+          <line x1="60.5" y1="45.5" x2="66.5" y2="51.5" stroke="#d5cca8" strokeWidth="2" />
+          <line x1="159.5" y1="45.5" x2="153.5" y2="51.5" stroke="#d5cca8" strokeWidth="2" />
+
+          {/* Scale Labels: 0 and MAX */}
+          <text x="32" y="112" fontSize="11" fontFamily="var(--font-mono)" fontWeight="700" fill="var(--text-faint)" textAnchor="middle">0</text>
+          <text x="188" y="112" fontSize="11" fontFamily="var(--font-mono)" fontWeight="700" fill="var(--text-faint)" textAnchor="middle">{max}</text>
+
+          {/* Rotating Needle with Center Pivot at (110, 95) */}
           <g
             style={{
-              transformOrigin: '100px 105px',
+              transformOrigin: '110px 95px',
               transform: `rotate(${needleAngle}deg)`,
               transition: 'transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1)'
             }}
           >
-            <polygon points="98,105 102,105 100,34" fill="#1c1917" />
-            <circle cx="100" cy="105" r="9" fill="#1c1917" />
-            <circle cx="100" cy="105" r="4" fill="#ffffff" />
+            <polygon points="107.5,95 112.5,95 110,32" fill="#1c1917" />
+            <circle cx="110" cy="95" r="8" fill="#1c1917" />
+            <circle cx="110" cy="95" r="3.5" fill="#ffffff" />
           </g>
         </svg>
-
-        <div style={{
-          marginTop: '6px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
-        }}>
-          <span style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '1.95rem',
-            fontWeight: 900,
-            color: 'var(--text-main)',
-            lineHeight: 1
-          }}>
-            <AnimatedNumber value={value} decimals={value % 1 === 0 ? 0 : 2} />
-            <span style={{ fontSize: '1rem', color: 'var(--text-faint)', marginLeft: '4px' }}>/ {max}</span>
-          </span>
-          {confidence !== undefined && (
-            <span style={{ fontFamily: 'var(--font-typewriter)', fontSize: '0.78rem', color: 'var(--text-faint)', marginTop: '2px' }}>
-              ({Math.round(confidence * 100)}% calibrated confidence)
-            </span>
-          )}
-        </div>
       </div>
 
+      {/* Prominent Score Readout & Confidence Below Gauge Base (No Overlap) */}
+      <div style={{
+        marginTop: '10px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}>
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '2.2rem',
+          fontWeight: 900,
+          color: 'var(--text-main)',
+          lineHeight: 1,
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: '4px'
+        }}>
+          <AnimatedNumber value={value} decimals={value % 1 === 0 ? 0 : 2} />
+          <span style={{ fontSize: '1.1rem', color: 'var(--text-faint)', fontWeight: 700 }}>/ {max}</span>
+        </div>
+
+        {confidence !== undefined && (
+          <div style={{
+            fontFamily: 'var(--font-typewriter)',
+            fontSize: '0.82rem',
+            color: 'var(--text-faint)',
+            marginTop: '5px'
+          }}>
+            ({Math.round(confidence * 100)}% calibrated confidence)
+          </div>
+        )}
+      </div>
+
+      {/* Dynamic Status Verdict Pill */}
       {verdict && (
         <div style={{
-          marginTop: '10px',
-          padding: '5px 14px',
+          marginTop: '12px',
+          padding: '6px 16px',
           borderRadius: '20px',
           background: activeColor === '#eb5e3e' ? '#fdf0ec' : activeColor === '#fabc22' ? '#fef8e7' : '#f2f5e8',
           border: `1.5px solid ${activeColor}`,
@@ -537,22 +561,23 @@ function SpeedometerDial({
         </div>
       )}
 
+      {/* Breakdown Legend Buttons */}
       {legend && (
         <div style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${Object.keys(legend).length}, 1fr)`,
           gap: '6px',
           width: '100%',
-          marginTop: '12px',
+          marginTop: '16px',
           borderTop: '1px solid #f0e7d5',
-          paddingTop: '10px'
+          paddingTop: '12px'
         }}>
           {Object.entries(legend).map(([idx, name]) => {
             const isMatch = Math.round(value) === Number(idx);
             return (
               <div key={idx} style={{
                 textAlign: 'center',
-                padding: '4px',
+                padding: '5px 4px',
                 borderRadius: '6px',
                 background: isMatch ? '#fff5eb' : '#faf7f0',
                 border: isMatch ? '1.5px solid var(--border-dark)' : '1px solid #ebd9bf',
@@ -1645,8 +1670,26 @@ export function App() {
                           transition: 'all 0.15s ease'
                         }}
                       >
-                        <Play size={13} fill={isCurrent ? '#fffefb' : '#1c1917'} />
-                        {isCurrent && isLoading ? 'Evaluating...' : 'Run Live (150ms)'}
+                        {isCurrent && isLoading ? (
+                          <LatticeLoader
+                            status="working"
+                            label="Thinking"
+                            pattern="orbit"
+                            grid={3}
+                            shape="round"
+                            color="#fffefb"
+                            cellSize={4}
+                            gap={2}
+                            fontSize={12}
+                            step={90}
+                            showTimer={false}
+                          />
+                        ) : (
+                          <>
+                            <Play size={13} fill={isCurrent ? '#fffefb' : '#1c1917'} />
+                            Run Live (150ms)
+                          </>
+                        )}
                       </button>
                     </div>
                   );
@@ -1825,10 +1868,19 @@ export function App() {
                     style={{ flex: 1, padding: '16px 32px', fontSize: '1.05rem' }}
                   >
                     {isLoading ? (
-                      <>
-                        <div className="pulse-indicator" style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#fffefb' }} />
-                        Evaluating Decision ({timerMs}ms)...
-                      </>
+                      <LatticeLoader
+                        status="working"
+                        label="Thinking"
+                        pattern="orbit"
+                        grid={3}
+                        shape="round"
+                        color="#fffefb"
+                        cellSize={5}
+                        gap={2}
+                        fontSize={14}
+                        step={90}
+                        showTimer={true}
+                      />
                     ) : (
                       <>
                         <Zap size={20} /> Execute High-Speed Decision
@@ -1851,7 +1903,7 @@ export function App() {
                       <div style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', color: 'var(--text-faint)', letterSpacing: '0.06em', fontWeight: 800 }}>LATENCY</div>
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-main)', minHeight: '26px', display: 'flex', alignItems: 'center' }}>
                         {isLoading ? (
-                          <div className="skeleton" style={{ width: '60px', height: '20px', borderRadius: '4px' }} />
+                          `${timerMs} ms`
                         ) : result ? (
                           `${result.latency_ms} ms`
                         ) : (
@@ -1896,38 +1948,47 @@ export function App() {
                 {/* SKELETON LOADING ANIMATION WHEN BUFFERING */}
                 {isLoading && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
-                    {/* Live Processing Header Bar */}
+                    {/* Live Processing Header Bar with React Bits LatticeLoader */}
                     <div style={{
-                      padding: '14px 18px',
-                      background: '#fffbf2',
-                      border: '1.5px solid #ebd9bf',
-                      borderRadius: '10px',
+                      padding: '16px 20px',
+                      background: '#ffffff',
+                      border: '1.5px solid var(--border-dark)',
+                      borderRadius: '12px',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'space-between'
+                      justifyContent: 'space-between',
+                      boxShadow: '0 2px 8px rgba(46, 28, 20, 0.05)'
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div className="pulse-indicator" style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#1c1917' }} />
-                        <div>
-                          <div style={{ fontFamily: 'var(--font-display)', fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                            Evaluating System 1 Primitives...
-                          </div>
-                          <div style={{ fontFamily: 'var(--font-typewriter)', fontSize: '0.8rem', color: 'var(--text-faint)' }}>
-                            Computing calibrated probabilities via direct forward pass
-                          </div>
-                        </div>
-                      </div>
+                      <LatticeLoader
+                        status="working"
+                        label="Thinking"
+                        doneLabel="Done in"
+                        errorLabel="Failed after"
+                        pattern="orbit"
+                        grid={3}
+                        shape="round"
+                        color="#1c1917"
+                        doneColor="#22c55e"
+                        errorColor="#ef4444"
+                        cellSize={6}
+                        gap={2}
+                        fontSize={14}
+                        step={90}
+                        idleOpacity={0.15}
+                        glow={false}
+                        showTimer={true}
+                      />
                       <div style={{
                         padding: '4px 12px',
-                        background: '#ffffff',
+                        background: '#faf7ef',
                         border: '1px solid #ebd9bf',
                         borderRadius: '16px',
-                        fontSize: '0.85rem',
+                        fontSize: '0.8rem',
                         fontFamily: 'var(--font-mono)',
                         fontWeight: 700,
-                        color: 'var(--text-main)'
+                        color: 'var(--text-espresso)'
                       }}>
-                        {timerMs} ms
+                        FORWARD PASS
                       </div>
                     </div>
 
