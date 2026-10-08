@@ -2803,11 +2803,7 @@ export function App() {
         background: 'var(--bg-primary)'
       }}>
         <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700 }}>
-          DESICIO<span style={{ color: 'var(--accent-coral)' }}>.AI</span> — SUB-200MS SYSTEM 1 DECISION ENGINE • POWERED BY JEV & NEON
-        </div>
-        <div style={{ display: 'flex', gap: '24px', fontFamily: 'var(--font-mono)', fontSize: '0.82rem' }}>
-          <span>Inference: api.typesafe.ai/v1/systemone</span>
-          <span>Target: &lt;200ms</span>
+          DESICIO<span style={{ color: 'var(--accent-coral)' }}>.AI</span> — SUB-200MS SYSTEM 1 DECISION ENGINE
         </div>
       </footer>
     </div>
